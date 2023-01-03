@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
+import User from "../User/User";
 
 const RandomUsers = () => {
   let [users, setUsers] = useState([]);
   const getUsers = () => {
     fetch("https://randomuser.me/api/")
       .then((res) => res.json())
-      .then((data) => setUsers(data.results));
-    console.log("count", " => Line No: 9");
+      .then((data) => setUsers([data.results]));
   };
   useEffect(() => {
     getUsers();
@@ -14,19 +14,21 @@ const RandomUsers = () => {
   const handleGetUser = () => {
     getUsers();
   };
-
+  const handleAddGetUser = () => {
+    fetch("https://randomuser.me/api/")
+      .then((res) => res.json())
+      .then((data) => setUsers([...users, data.results]));
+  };
   return (
-    <div>
+    <>
       <h4>
         <button onClick={handleGetUser}>New User</button>
+        <button onClick={handleAddGetUser}>Add New User</button>
       </h4>
-      <div style={{ border: "2px solid black", maxWidth: "600px", margin: "10px  auto" }}>
-        <h2>Name: {users[0]?.name.title + " " + users[0]?.name.first + " " + users[0]?.name.last}</h2>
-        <h2>Email: {users[0]?.email}</h2>
-        <h2>Gender: {users[0]?.gender}</h2>
-        <img src={users[0]?.picture.medium} alt={users[0]?.name.title + " " + users[0]?.name.first + " " + users[0]?.name.last} />
-      </div>
-    </div>
+      {users.map((user, index) => (
+        <User user={user} key={index}></User>
+      ))}
+    </>
   );
 };
 
